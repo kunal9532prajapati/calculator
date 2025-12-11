@@ -1,0 +1,48 @@
+// Get the display element
+const display = document.getElementById('display');
+
+// Function to append value to the display
+function appendValue(value) {
+    // Prevent multiple leading zeros unless followed by a decimal
+    if (display.value === '0' && value !== '.') {
+        display.value = value;
+    } else {
+        display.value += value;
+    }
+}
+
+// Function to clear the entire display
+function clearDisplay() {
+    display.value = '';
+}
+
+
+
+// Function to delete the last character
+function deleteLast() {
+    display.value = display.value.slice(0, -1);
+}
+
+// Function to calculate the result
+function calculateResult() {
+    try {
+        // Use the built-in 'eval()' function for calculation (Be cautious with eval in production environments!)
+        // The regex replaces percentage operations (e.g., '50%') with their decimal equivalent ('/100')
+        const expression = display.value.replace(/(\d+(\.\d+)?)%/g, '($1/100)');
+        
+        // Evaluate the expression and store the result
+        let result = eval(expression);
+
+        // Handle potential division by zero
+        if (result === Infinity || result === -Infinity) {
+            display.value = "Error: Div by Zero";
+        } else {
+            // Fix result to 4 decimal places if it's a long float
+            display.value = result.toFixed(4).replace(/\.0000$/, ''); 
+        }
+
+    } catch (error) {
+        // Handle syntax errors (e.g., incomplete expressions)
+        display.value = "Error";
+    }
+}
